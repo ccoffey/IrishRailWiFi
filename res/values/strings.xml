@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IrishRailWiFi</string>
+    <string name="service_name">IrishRailWiFiService</string>
+    <string name="ssid">irishrail-wifi</string>
+    <string name="label_email_address">Email address</string>
+    <string name="hint_email_address"></string>
+    <string name="image_content_description">IrishRailWiFi logo</string>
+    <string name="label_terms_and_conditions">I agree to the Irishrail Wi-Fi service <a href='http://irishrail.on.icomera.com/include/hotspot_tscs.pdf'>terms and conditions.</a></string>
+    <string name="save_button_text">Save</string>
+    <string name="title">Irish Rail WiFi</string>
+</resources>
