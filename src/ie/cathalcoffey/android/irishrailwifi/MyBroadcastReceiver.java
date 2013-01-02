@@ -31,14 +31,14 @@ public class MyBroadcastReceiver extends BroadcastReceiver
                 SharedPreferences sp = PreferenceManager
                         .getDefaultSharedPreferences(context);
                 String username = sp.getString("@string/username", "");
-                String password = sp.getString("@string/password", "");
+                Boolean checked = sp.getBoolean("@string/checked", false);
 
                 String irishrailwifi = context.getString(R.string.ssid);
                 if (ssid != null
                         && ssid.toLowerCase().contains(
                         		irishrailwifi.toLowerCase()))
                 {
-                    new IrishRailWiFi().execute(username, password);
+                    new IrishRailWiFi().execute(username, checked.toString().toLowerCase());
                 }
             }
         }
