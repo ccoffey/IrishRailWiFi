@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -22,28 +24,59 @@ public class MyActivity extends Activity
 {
     SharedPreferences sp;
     SharedPreferences.Editor spe;
+    
     EditText editTextUsername;
     CheckBox checkBox1;
+    TextView textView;
+    Button button;
+    
     String username;
     Boolean checked;
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.main);
-
-        TextView textView = (TextView)findViewById(R.id.textView1);
+        
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        spe = sp.edit();
+        
+        username = sp.getString("@string/username", "");
+        checked = sp.getBoolean("@string/checked", false);
+        
+        editTextUsername = (EditText) findViewById(R.id.editText1);
+        checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
+        textView = (TextView)findViewById(R.id.textView1);
+        button = (Button) findViewById(R.id.button1);
+        
+        editTextUsername.setText(username);
+        checkBox1.setChecked(checked);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
+        button.setEnabled(sp.getBoolean("@string/checked", false));
         
         ScrollView sView = (ScrollView) findViewById(R.id.scrollview);
         sView.setVerticalScrollBarEnabled(false);
         sView.setHorizontalScrollBarEnabled(false);
 
-        final Button button = (Button) findViewById(R.id.button1);
+        checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
+        checkBox1.setOnCheckedChangeListener(
+    		new OnCheckedChangeListener(){
+				@Override
+				public void onCheckedChanged(CompoundButton arg0, boolean checked) {
+					button.setEnabled(checked);
+					
+					if(!checked)
+					{
+						spe.putBoolean("@string/checked", checked);
+						spe.commit();
+					}
+				} 
+			}
+        );
+        
         button.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -59,29 +92,24 @@ public class MyActivity extends Activity
 
                 else
                 {
-                    spe = PreferenceManager.getDefaultSharedPreferences(
-                            getApplicationContext()).edit();
                     spe.putString("@string/username", username);
                     spe.putBoolean("@string/checked", checked);
                     spe.commit();
 
-                    Intent intent = new Intent(
-                            ForegroundService.ACTION_BACKGROUND);
+                    Intent intent = new Intent(ForegroundService.ACTION_BACKGROUND);
                     intent.setClass(getApplicationContext(), MyService.class);
                     startService(intent);
 
-                    WifiManager wifiManager = (WifiManager) getApplicationContext()
-                            .getSystemService(Context.WIFI_SERVICE);
+                    WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                     WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 
                     String ssid = wifiInfo.getSSID();
                     String irishrailwifi = getString(R.string.ssid);
-
-                    if (ssid != null
-                            && ssid.toLowerCase().contains(
-                            		irishrailwifi.toLowerCase()))
+                    
+                    if (ssid != null && ssid.toLowerCase().contains(irishrailwifi.toLowerCase()))
                     {
-                        new IrishRailWiFi().execute(username, checked.toString().toLowerCase());
+                    	if(sp.getBoolean("@string/checked", false))
+                            new IrishRailWiFi().execute(username, checked.toString().toLowerCase());
                     }
 
                     finish();
@@ -89,41 +117,13 @@ public class MyActivity extends Activity
             }
         });
     }
-
+    
     @Override
-    protected void onPause()
+    public void onResume()
     {
-        super.onPause();
-
-        if (!(username.equalsIgnoreCase("cathal coffey")))
-        {
-            spe = PreferenceManager.getDefaultSharedPreferences(
-                    getApplicationContext()).edit();
-
-            editTextUsername = (EditText) findViewById(R.id.editText1);
-            spe.putString("@string/username", editTextUsername.getText().toString());
-
-            checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
-            spe.putBoolean("@string/checked", checkBox1.isChecked());
-
-            spe.commit();
-        }
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-
-        sp = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
-        username = sp.getString("@string/username", "");
-        checked = sp.getBoolean("@string/checked", false);
-
-        editTextUsername = (EditText) findViewById(R.id.editText1);
-        editTextUsername.setText(username);
-
-        checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
-        checkBox1.setChecked(checked);
+    	super.onResume();
+    	
+    	checkBox1.setChecked(sp.getBoolean("@string/checked", false));
+    	button.setEnabled(sp.getBoolean("@string/checked", false));
     }
 }

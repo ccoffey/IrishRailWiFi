@@ -71,6 +71,7 @@
 	    </LinearLayout>
 	    
 		<Button
+		    android:enabled="false"
 		    android:layout_marginTop="5dip"
 		    android:id="@+id/button1"
 		    android:layout_width="fill_parent"

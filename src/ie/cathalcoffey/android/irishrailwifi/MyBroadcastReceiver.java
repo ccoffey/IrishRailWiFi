@@ -34,11 +34,10 @@ public class MyBroadcastReceiver extends BroadcastReceiver
                 Boolean checked = sp.getBoolean("@string/checked", false);
 
                 String irishrailwifi = context.getString(R.string.ssid);
-                if (ssid != null
-                        && ssid.toLowerCase().contains(
-                        		irishrailwifi.toLowerCase()))
+                if (ssid != null && ssid.toLowerCase().contains(irishrailwifi.toLowerCase()))
                 {
-                    new IrishRailWiFi().execute(username, checked.toString().toLowerCase());
+                	if(sp.getBoolean("@string/checked", false))
+                        new IrishRailWiFi().execute(username, checked.toString().toLowerCase());
                 }
             }
         }

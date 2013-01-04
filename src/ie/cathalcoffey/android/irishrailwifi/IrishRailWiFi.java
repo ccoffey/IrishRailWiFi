@@ -26,9 +26,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
-
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class IrishRailWiFi extends AsyncTask<Object, Void, Void>
 {
@@ -77,29 +75,16 @@ public class IrishRailWiFi extends AsyncTask<Object, Void, Void>
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             HttpResponse response = httpclient.execute(httppost);
-            
-            /*BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
-            StringBuilder s = new StringBuilder();
-            String sResponse;
-            while ((sResponse = reader.readLine()) != null) {
-                s = s.append(sResponse);
-            }
-            
-            String html = s.toString();
-            */
-        	Log.i("cathal", "IrishRailWiFi: Connected");
         }
 
         catch (ClientProtocolException e)
         {
         	String msg = e.getMessage();
-        	Log.e("cathal", msg);
         }
 
         catch (IOException e)
         {
         	String msg = e.getMessage();
-        	Log.e("cathal", msg);
         }
         return null;
     }
